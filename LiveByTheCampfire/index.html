@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="theme-color" content="#101419">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Live By The Campfire">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <title>LifeByTheCampfire</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="icon"
+          href="icon.jpg">
+
+</head>
+
+
+<body>
+
+    <!-- ========================================= -->
+    <!-- PANTALLA DE BLOQUEO                      -->
+    <!-- ========================================= -->
+
+    <div id="bloqueo-pantalla">
+
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">
+            DEMO
+        </h1>
+
+        <p id="instrucciones-menu" style="font-size: 1.3rem; color: #aaa;">
+            Elige el día en que quieres empezar y pulsa Comenzar. Si el ratón no se captura, arrastra con el botón izquierdo para mirar.
+        </p>
+
+        <div id="selector-dia-inicio">
+            <label for="dia-inicio">Día de inicio (1–365)</label>
+            <input id="dia-inicio" type="number" min="1" max="365" step="1" value="1" inputmode="numeric">
+            <button id="boton-iniciar-juego" type="button">Comenzar</button>
+        </div>
+
+        <p id="ayuda-controles-tactiles">
+            Joystick: moverte · Arrastra a la derecha: mirar · ✋ interactuar · 🏃 correr · ▲ saltar · ▼ agacharse
+        </p>
+
+        <p style="font-size: 1.3rem; color: #aaa;">
+            © Mathias 7/10/2026
+        </p>
+
+        <p style="font-size: 1.3rem; color: #aaa;">
+            Para mejor experiencia oculte el badge de Netlify
+        </p>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- HUD                                      -->
+    <!-- ========================================= -->
+
+    <div id="fps-counter">
+        FPS: 0
+    </div>
+
+    <div id="hud-superior">
+        <div id="hud-calendario">
+            Día 1 / 365 · Primavera
+        </div>
+        <div id="hud-viento" role="status" aria-live="polite" aria-hidden="true"></div>
+        <div id="hud-progreso-fogata" role="status" aria-live="polite"></div>
+    </div>
+
+    <div id="hud-coordenadas" aria-label="Coordenadas del jugador">
+        X: 0 · Y: 0 · Z: 0
+    </div>
+
+    <div id="consola-comandos" aria-hidden="true">
+        <label for="entrada-comandos">Comando</label>
+        <input id="entrada-comandos" type="text" autocomplete="off" spellcheck="false" placeholder="tp X Z">
+    </div>
+
+
+    <div id="hud-modo">
+        MODO ESPECTADOR ACTIVO (Inspecciona libremente)
+    </div>
+
+
+    <div id="reticula"></div>
+
+
+    <!-- ========================================= -->
+    <!-- CANVAS THREE.JS                          -->
+    <!-- ========================================= -->
+
+    <div id="canvas-container"></div>
+
+
+    <!-- ========================================= -->
+    <!-- HUD DEL JUGADOR                          -->
+    <!-- ========================================= -->
+
+    <div id="hud-jugador">
+
+
+        <!-- VIDA -->
+
+        <div class="contenedor-vida">
+
+            <span class="icono-corazon">
+                ❤️
+            </span>
+
+            <div class="barra-vida-fondo">
+
+                <div id="barra-vida-actual"></div>
+
+            </div>
+
+        </div>  
+
+        <div class="contenedor-hambre"
+             style="margin-top: 8px;">
+
+            <span class="icono-hambre">
+                🍗
+            </span>
+
+            <div class="barra-hambre-fondo">
+
+                <div id="barra-hambre-actual"></div>
+                
+            </div>
+
+        </div>
+
+        <div class="contenedor-oxigeno"
+             style="margin-top: 8px;">
+
+            <span class="icono-oxigeno">
+                🫧
+            </span>
+
+            <div class="barra-oxigeno-fondo">
+
+                <div id="barra-oxigeno-actual"></div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div id="inventario-overlay">
+
+
+        <div id="inventario">
+            
+            <button id="boton-cerrar-inventario-tactil" type="button" aria-label="Cerrar inventario">Cerrar ×</button>
+            <div id="inventario-titulo">
+                INVENTARIO
+            </div>
+
+
+            <!-- 27 SLOTS DEL INVENTARIO -->
+
+            <div id="inventario-slots"></div>
+
+
+            <!-- 9 SLOTS DE LA HOTBAR -->
+
+            <div id="inventario-hotbar"></div>
+
+        </div>
+    </div>
+    <div id="hotbar-hud">
+    <!-- Se generarán 9 slots mediante JavaScript -->
+    </div>
+
+    <div id="controles-tactiles" aria-label="Controles táctiles del juego">
+        <div id="zona-mirada" aria-label="Arrastra para girar la cámara"></div>
+        <div id="joystick-tactil" aria-label="Joystick de movimiento">
+            <div id="joystick-base"><div id="joystick-punto"></div></div>
+            <span>MOVER</span>
+        </div>
+        <div id="acciones-tactiles">
+            <div class="acciones-superiores-tactiles">
+                <button id="boton-inventario-tactil" type="button" aria-label="Abrir inventario">🎒</button>
+                <button id="boton-musica-tactil" type="button" aria-label="Desactivar música">♫</button>
+                <button id="boton-zoom-tactil" type="button" aria-label="Activar zoom">🔍</button>
+                <button id="boton-pantalla-completa-tactil" type="button" aria-label="Entrar en pantalla completa">⛶</button>
+                <button id="boton-pausa-tactil" type="button" aria-label="Pausar juego">Ⅱ</button>
+            </div>
+            <div class="acciones-inferiores-tactiles">
+                <button id="boton-agacharse-tactil" type="button" aria-label="Agacharse">▼</button>
+                <button id="boton-correr-tactil" type="button" aria-label="Activar carrera" aria-pressed="false">🏃</button>
+                <button id="boton-interaccion-tactil" type="button" aria-label="Interactuar">✋</button>
+                <button id="boton-saltar-tactil" type="button" aria-label="Saltar o subir">▲</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="mensaje-pantalla-completa" role="status" aria-live="polite"></div>
+
+    <div id="aviso-telefono" role="status" aria-live="polite" aria-hidden="true">
+        <span class="icono-aviso-telefono" aria-hidden="true">⚠</span>
+        <span id="texto-aviso">No deberías revisar ese teléfono.</span>
+    </div>
+
+    <div id="aviso-orientacion" role="status" ari   a-live="polite">
+        <div class="tarjeta-orientacion">
+            <div class="icono-orientacion" aria-hidden="true">↻</div>
+            <h2>Gira tu dispositivo</h2>
+            <p>Este juego se puede jugar en móviles y tabletas en horizontal.</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/PointerLockControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+    <!-- Sistemas del juego: scripts clásicos en este orden para conservar el estado compartido. -->
+    <!-- Los scripts deben estar siempre en este orden por que o si no van a haber errores-->
+    <script src="js/systems/01-scene-and-sky.js"></script>
+    <script src="js/systems/02-terrain.js"></script>
+    <script src="js/systems/03-weather.js"></script>
+    <script src="js/systems/04-vegetation.js"></script>
+    <script src="js/systems/14-cabin.js"></script>
+    <script src="js/systems/05-campfire-and-chickens.js"></script>
+    <script src="js/systems/06-audio-and-pointer.js"></script>
+    <script src="js/systems/07-inventory.js"></script>
+    <script src="js/systems/08-touch-controls.js"></script>
+    <script src="js/systems/09-hotbar.js"></script>
+    <script src="js/systems/15-cooking.js"></script>
+    <script src="js/systems/10-player.js"></script>
+    <script src="js/systems/11-collisions.js"></script>
+    <script src="js/systems/12-fps-and-vitals.js"></script>
+    <script src="js/systems/13-game-loop.js"></script>
+</body>
+
+</html>
